@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView logview;
     private EditText input;
     private Button button;
+    private Button soundbutton;
 
     private final ArrayList<ChatMessage> chatLog = new ArrayList<>();
     private ArrayAdapter<ChatMessage> chatLogAdapter;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         progress = findViewById(R.id.main_progress);
         input = findViewById(R.id.main_input);
         button = findViewById(R.id.main_button);
+        soundbutton = findViewById(R.id.sound_button);
 
         chatLogAdapter = new ArrayAdapter<ChatMessage>(this, 0, chatLog) {
             @Override
@@ -236,6 +238,19 @@ public class MainActivity extends AppCompatActivity {
         input.getEditableText().clear();
     }
 
+    public void onClickSendSoundButton(View v) {
+        Log.d(TAG, "onClickSendSoundButton");
+
+        messageSeq++;
+        long time = System.currentTimeMillis();
+        ChatMessage message = new ChatMessage(messageSeq, time, "Send sound", adapter.getName(), 1);
+        agent.send(message);
+        chatLogAdapter.add(message);
+        chatLogAdapter.notifyDataSetChanged();
+        logview.smoothScrollToPosition(chatLog.size());
+        input.getEditableText().clear();
+    }
+
     public void setState(State state) {
         setState(state, null);
     }
@@ -244,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
         this.state = state;
         input.setEnabled(state == State.Connected);
         button.setEnabled(state == State.Connected);
+        soundbutton.setEnabled(state == State.Connected);
         switch (state) {
         case Initializing:
         case Disconnected:
@@ -271,6 +287,9 @@ public class MainActivity extends AppCompatActivity {
         chatLogAdapter.add(message);
         chatLogAdapter.notifyDataSetChanged();
         logview.smoothScrollToPosition(chatLogAdapter.getCount());
+        if(message.sound  == 1){
+            soundPlayer.playSound();
+        }
     }
 
     private void disconnect() {
@@ -280,4 +299,5 @@ public class MainActivity extends AppCompatActivity {
         setState(State.Disconnected);
         soundPlayer.playDisconnected();
     }
+
 }
