@@ -27,6 +27,7 @@ class SoundPlayer {
         soundDisconnected = soundPool.load(context, R.raw.nhk_woodblock2, 1);
 
         soundPlay = soundPool.load(context, R.raw.ro_dora, 1);
+        //soundPlay = soundPool.load(context, R.raw.nhk_doorbell, 1);
     }
 
     void playConnected() {
